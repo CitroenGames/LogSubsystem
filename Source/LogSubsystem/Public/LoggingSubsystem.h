@@ -8,7 +8,7 @@
 #include "LoggingSubsystem.generated.h"
 
 UCLASS()
-class ULoggingSubsystem : public UGameInstanceSubsystem
+class ULoggingSubsystem : public UEngineSubsystem
 {
     GENERATED_BODY()
 

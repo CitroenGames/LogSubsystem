@@ -35,12 +35,12 @@ bool ULoggingSubsystem::IsLoggingEnabled()
     ULoggingSaveGame* SaveGameInstance = Cast<ULoggingSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("LoggingSaveSlot"), 0));
     if (!SaveGameInstance)
     {
-		SaveGameInstance = Cast<ULoggingSaveGame>(UGameplayStatics::CreateSaveGameObject(ULoggingSaveGame::StaticClass()));
-	}
-    
+        SaveGameInstance = Cast<ULoggingSaveGame>(UGameplayStatics::CreateSaveGameObject(ULoggingSaveGame::StaticClass()));
+    }
+
     // print save game instance if bLoggingEnabled is enabled
     UE_LOG(LogTemp, Warning, TEXT("SaveGameInstance: %s"), SaveGameInstance->bLoggingEnabled ? TEXT("true") : TEXT("false"));
-	return SaveGameInstance->bLoggingEnabled;
+    return SaveGameInstance->bLoggingEnabled;
 }
 
 void ULoggingSubsystem::SetLoggingEnabled(bool bEnabled)
