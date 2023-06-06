@@ -1,13 +1,11 @@
 // CitroenGames 2023
 
-
 #include "LoggingSubsystem.h"
 #include "Misc/DateTime.h"
 #include "HAL/PlatformFilemanager.h"
 #include "GenericPlatform/GenericPlatformFile.h"
 #include "Misc/FileHelper.h"
 #include "Misc/App.h"
-#include "GameFramework/GameUserSettings.h"
 
 void ULoggingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -29,17 +27,27 @@ void ULoggingSubsystem::Deinitialize()
 
 void ULoggingSubsystem::SetLoggingEnabled(bool bEnabled)
 {
-    // Update the setting in the configuration file
+    if (!GConfig)
+    {
+        UE_LOG(LogTemp, Error, TEXT("GConfig is null!"));
+        return;
+    }
+
     GConfig->SetBool(TEXT("Logging"), TEXT("bLoggingEnabled"), bEnabled, GGameIni);
-    // Make sure to save the changes
     GConfig->Flush(false, GGameIni);
+
+    // Debug message
+    UE_LOG(LogTemp, Warning, TEXT("Logging has been %s."), bEnabled ? TEXT("enabled") : TEXT("disabled"));
 }
 
 bool ULoggingSubsystem::IsLoggingEnabled() const
 {
     bool bLoggingEnabled = false;
-    // Retrieve the setting from the configuration file
     GConfig->GetBool(TEXT("Logging"), TEXT("bLoggingEnabled"), bLoggingEnabled, GGameIni);
+
+    // Debug message
+    UE_LOG(LogTemp, Warning, TEXT("Checked if logging is enabled: %s."), bLoggingEnabled ? TEXT("Yes") : TEXT("No"));
+
     return bLoggingEnabled;
 }
 
@@ -51,4 +59,3 @@ void ULoggingSubsystem::LogToFile(const FString& LogMessage)
         FFileHelper::SaveStringToFile(LogMessage + LINE_TERMINATOR, *LogFilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
     }
 }
-

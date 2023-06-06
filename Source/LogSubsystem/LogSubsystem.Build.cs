@@ -26,7 +26,6 @@ public class LogSubsystem : ModuleRules
 			new string[]
 			{
 				"Core",
-				"DeveloperSettings",
 				"Engine"
 				// ... add other public dependencies that you statically link with here ...
 			}

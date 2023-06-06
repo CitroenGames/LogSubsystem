@@ -2,30 +2,21 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Subsystems/Subsystem.h"
+#include "Subsystems/EngineSubsystem.h"
 #include "LoggingSubsystem.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class LOGSUBSYSTEM_API ULoggingSubsystem : public UGameInstanceSubsystem
+class ULoggingSubsystem : public UEngineSubsystem
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
 
-    UFUNCTION(BlueprintCallable, Category = "Logging")
-        void SetLoggingEnabled(bool bEnabled);
-
-    UFUNCTION(BlueprintCallable, Category = "Logging")
-        bool IsLoggingEnabled() const;
-
-    UFUNCTION(BlueprintCallable, Category = "Logging")
-        void LogToFile(const FString& LogMessage);
+    void SetLoggingEnabled(bool bEnabled);
+    bool IsLoggingEnabled() const;
+    void LogToFile(const FString& LogMessage);
 
 private:
     FString LogFilePath;
