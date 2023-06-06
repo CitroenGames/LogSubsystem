@@ -8,12 +8,17 @@
 
 void FLogSubsystemModule::StartupModule()
 {
-    // Initialize your custom subsystem here (optional)
-    UEngineSubsystem* LoggingSubsystem = GEngine->GetEngineSubsystem<ULoggingSubsystem>();
-    if (LoggingSubsystem)
+    // This function will be called after your module is loaded into memory.
+    // Subscribe to the delegate that is called when the engine has been initialized.
+    FCoreDelegates::OnPostEngineInit.AddLambda([this]()
     {
-        UE_LOG(LogTemp, Log, TEXT("Logging subsystem initialized!"));
-    }
+        // Initialize your custom subsystem here (optional)
+        UEngineSubsystem* LoggingSubsystem = GEngine->GetEngineSubsystem<ULoggingSubsystem>();
+        if (LoggingSubsystem)
+        {
+            UE_LOG(LogTemp, Log, TEXT("Logging subsystem initialized!"));
+        }
+    });
 }
 
 void FLogSubsystemModule::ShutdownModule()
