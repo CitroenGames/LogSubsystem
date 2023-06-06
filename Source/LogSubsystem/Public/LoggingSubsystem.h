@@ -14,16 +14,15 @@ class ULoggingSubsystem : public UGameInstanceSubsystem
 
 public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-    virtual void Deinitialize() override;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Logging Subsystem")
     void SetLoggingEnabled(bool bEnabled);
 
-    UFUNCTION(BlueprintCallable)
-    bool IsLoggingEnabled() const;
+    UFUNCTION(BlueprintCallable, Category = "Logging Subsystem")
+    bool IsLoggingEnabled();
     
-    UFUNCTION(BlueprintCallable)
-    void LogToFile(const FString& LogMessage);
+    UFUNCTION(BlueprintCallable, Category = "Logging Subsystem")
+    bool LogToFile(const FString& LogMessage);
 
 private:
     FString LogFilePath;
