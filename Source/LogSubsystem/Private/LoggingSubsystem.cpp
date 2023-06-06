@@ -7,7 +7,6 @@
 #include "GenericPlatform/GenericPlatformFile.h"
 #include "Misc/FileHelper.h"
 #include "Misc/App.h"
-#include "LoggingSettings.h"
 #include "GameFramework/GameUserSettings.h"
 
 void ULoggingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
