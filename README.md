@@ -41,4 +41,18 @@ Or, from Blueprint:
 GetSubsystem -> SetLoggingEnabled
 ```
 
-Note: Logging is disabled by default for runtime.
+Note: Logging is disabled by default.
+
+## Contributions
+
+Contributions are welcomed! To contribute:
+
+1. Fork the project.
+2. Create your feature branch: `git checkout -b feature/my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/my-new-feature`
+5. Submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
