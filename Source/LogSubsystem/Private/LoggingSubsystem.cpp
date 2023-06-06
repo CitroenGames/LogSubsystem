@@ -27,35 +27,48 @@ void ULoggingSubsystem::Deinitialize()
 
 void ULoggingSubsystem::SetLoggingEnabled(bool bEnabled)
 {
-    if (!GConfig)
+    ULoggingSaveGame* SaveGameInstance = Cast<ULoggingSaveGame>(UGameplayStatics::CreateSaveGameObject(ULoggingSaveGame::StaticClass()));
+    if (!SaveGameInstance)
     {
-        UE_LOG(LogTemp, Error, TEXT("GConfig is null!"));
+        UE_LOG(LogTemp, Error, TEXT("SaveGameInstance is null!"));
         return;
     }
 
-    GConfig->SetBool(TEXT("Logging"), TEXT("bLoggingEnabled"), bEnabled, GGameIni);
-    GConfig->Flush(false, GGameIni);
+    SaveGameInstance->bLoggingEnabled = bEnabled;
 
-    // Debug message
-    UE_LOG(LogTemp, Warning, TEXT("Logging has been %s."), bEnabled ? TEXT("enabled") : TEXT("disabled"));
+    // Now the bool value is saved in the SaveGameInstance, you need to write it to disk
+    UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("LoggingSaveSlot"), 0);
 }
 
 bool ULoggingSubsystem::IsLoggingEnabled() const
 {
-    bool bLoggingEnabled = false;
-    GConfig->GetBool(TEXT("Logging"), TEXT("bLoggingEnabled"), bLoggingEnabled, GGameIni);
+    ULoggingSaveGame* LoadGameInstance = Cast<ULoggingSaveGame>(UGameplayStatics::CreateSaveGameObject(ULoggingSaveGame::StaticClass()));
+    if (!LoadGameInstance)
+    {
+        UE_LOG(LogTemp, Error, TEXT("LoadGameInstance is null!"));
+        return false;
+    }
 
-    // Debug message
-    UE_LOG(LogTemp, Warning, TEXT("Checked if logging is enabled: %s."), bLoggingEnabled ? TEXT("Yes") : TEXT("No"));
+    // Load the saved game from the specified slot
+    LoadGameInstance = Cast<ULoggingSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("LoggingSaveSlot"), 0));
 
-    return bLoggingEnabled;
+    // If the slot doesn't exist or failed to load, default to logging being disabled
+    if (!LoadGameInstance)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load game from slot!"));
+        return false;
+    }
+
+    return LoadGameInstance->bLoggingEnabled;
 }
 
 void ULoggingSubsystem::LogToFile(const FString& LogMessage)
 {
-    if (IsLoggingEnabled())
+    if (!IsLoggingEnabled())
     {
-        // Append the log message to the file
-        FFileHelper::SaveStringToFile(LogMessage + LINE_TERMINATOR, *LogFilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
+        return;
     }
+
+    // Log the message to the file
+    FFileHelper::SaveStringToFile(LogMessage + LINE_TERMINATOR, *LogFilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
 }

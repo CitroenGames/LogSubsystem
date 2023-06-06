@@ -2,11 +2,13 @@
 
 #pragma once
 
-#include "Subsystems/EngineSubsystem.h"
+#include "CoreMinimal.h"
+#include "LoggingSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "LoggingSubsystem.generated.h"
 
 UCLASS()
-class ULoggingSubsystem : public UEngineSubsystem
+class ULoggingSubsystem : public UGameInstanceSubsystem
 {
     GENERATED_BODY()
 
@@ -16,8 +18,10 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void SetLoggingEnabled(bool bEnabled);
+
     UFUNCTION(BlueprintCallable)
     bool IsLoggingEnabled() const;
+    
     UFUNCTION(BlueprintCallable)
     void LogToFile(const FString& LogMessage);
 
