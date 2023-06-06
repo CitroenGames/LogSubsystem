@@ -8,40 +8,48 @@
 #include "Misc/FileHelper.h"
 #include "Misc/App.h"
 #include "LoggingSettings.h"
+#include "GameFramework/GameUserSettings.h"
 
-ULoggingSubsystem::ULoggingSubsystem()
+void ULoggingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-    // Get the current Unix timestamp at startup and store it
-    FDateTime Now = FDateTime::UtcNow();
-    StartupTime = FString::Printf(TEXT("%lld"), Now.ToUnixTimestamp());
-
-    // Get the platform user directory and project name
+    // Get the user directory and project name
     FString UserDir = FPlatformProcess::UserDir();
     FString ProjectName = FApp::GetProjectName();
 
-    // Build the full path to the log file
-    LogFilePath = FPaths::Combine(UserDir, ProjectName, ProjectName + StartupTime + ".txt");
-    
-    // Check if the file already exists
-    IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-    if (!PlatformFile.FileExists(*LogFilePath))
-    {
-        // If the file doesn't exist, create it
-        FFileHelper::SaveStringToFile(FString(""), *LogFilePath);
-    }
+    // Generate the full log file path
+    LogFilePath = UserDir / ProjectName / (ProjectName + FString::Printf(TEXT("%lld.log"), FDateTime::UtcNow().ToUnixTimestamp()));
+
+    // Ensure the directory exists
+    IFileManager::Get().MakeDirectory(*FPaths::GetPath(LogFilePath), true);
+}
+
+void ULoggingSubsystem::Deinitialize()
+{
+    // Clean up any resources here
+}
+
+void ULoggingSubsystem::SetLoggingEnabled(bool bEnabled)
+{
+    // Update the setting in the configuration file
+    GConfig->SetBool(TEXT("Logging"), TEXT("bLoggingEnabled"), bEnabled, GGameIni);
+    // Make sure to save the changes
+    GConfig->Flush(false, GGameIni);
+}
+
+bool ULoggingSubsystem::IsLoggingEnabled() const
+{
+    bool bLoggingEnabled = false;
+    // Retrieve the setting from the configuration file
+    GConfig->GetBool(TEXT("Logging"), TEXT("bLoggingEnabled"), bLoggingEnabled, GGameIni);
+    return bLoggingEnabled;
 }
 
 void ULoggingSubsystem::LogToFile(const FString& LogMessage)
 {
-    // Get a pointer to the settings object
-    const ULoggingSettings* Settings = GetDefault<ULoggingSettings>();
-
-    // Check if we should log in a packaged build
-    if (Settings->bEnableLoggingInPackagedBuilds || GIsEditor)
+    if (IsLoggingEnabled())
     {
         // Append the log message to the file
         FFileHelper::SaveStringToFile(LogMessage + LINE_TERMINATOR, *LogFilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
     }
 }
-
 
