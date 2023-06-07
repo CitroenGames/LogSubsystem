@@ -10,8 +10,7 @@ This project provides a custom logging subsystem for Unreal Engine 5 that allows
 - The logging state is stored in a save game object, ensuring persistence across game sessions.
 
 ## Setup
-- Clone this repository into your Plugins folder in your Unreal Engine 5 project.
-- Ensure that the "LoggingSaveGame" class is included in your project. This class is used to store the logging state between game sessions.
+- Download this repository and put it into your Plugins folder in your Unreal Engine 5 project.
 - Re-generate project files by right-clicking on your .uproject file and selecting "Generate Visual Studio project files".
 - Build the project in your preferred IDE (e.g., Visual Studio).
 
